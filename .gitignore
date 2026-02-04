@@ -5,3 +5,4 @@ venv/
 *.pyc
 .zencoder/
 .zenflow/
+server.log
