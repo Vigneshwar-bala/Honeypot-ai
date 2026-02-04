@@ -22,6 +22,14 @@ def health():
     return {"status": "ok"}
 
 
+@app.post("/", dependencies=[Depends(verify_api_key)])
+def root_healthcheck():
+    return {
+        "status": "ok",
+        "message": "Honeypot API reachable"
+    }
+
+
 @app.post(
     "/honeypot/message",
     response_model=HoneypotResponse,
