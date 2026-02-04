@@ -31,6 +31,19 @@ async def root_ping(x_api_key: str = Header(None)):
     return {"status": "ok"}
 
 
+@app.post("/honeypot/test")
+async def honeypot_test(x_api_key: str = Header(None)):
+    """
+    Dedicated endpoint for GUVI Tester UI.
+    Accepts no body, validates x-api-key, returns success JSON.
+    """
+    validate_api_key(x_api_key)
+    return {
+        "status": "ok",
+        "message": "Honeypot endpoint reachable"
+    }
+
+
 @app.post(
     "/honeypot/message",
     response_model=HoneypotResponse
