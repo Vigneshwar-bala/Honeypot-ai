@@ -1,20 +1,9 @@
-from fastapi import FastAPI, Depends, Header, HTTPException
-from dotenv import load_dotenv
-import os
-
+from fastapi import FastAPI, Depends
 from app.schemas.request_response import RequestPayload, HoneypotResponse
 from app.modules.member1.orchestrator import process_message
-
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY")
+from app.core.security import verify_api_key
 
 app = FastAPI(title="Agentic Scam Honeypot", version="0.1.0")
-
-
-def verify_api_key(x_api_key: str = Header(...)):
-    if not API_KEY or x_api_key != API_KEY:
-        raise HTTPException(status_code=401, detail="Invalid API Key")
 
 
 @app.get("/")
@@ -23,7 +12,11 @@ def health():
 
 
 @app.post("/", dependencies=[Depends(verify_api_key)])
-def root_healthcheck():
+async def root_endpoint():
+    """
+    Required compatibility endpoint for GUVI Honeypot Tester.
+    Accepts empty body and returns standard reachability JSON.
+    """
     return {
         "status": "ok",
         "message": "Honeypot API reachable"
